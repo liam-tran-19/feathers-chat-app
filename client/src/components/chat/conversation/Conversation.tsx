@@ -5,6 +5,7 @@ import { useLocation } from "react-router";
 import { IUserObj, IMessage, IMsg, IMsgData } from "../../../types/interfaces";
 import axios from "axios";
 import { app } from "../../socket";
+import avatar from '../../../images/prodile.png'
 
 const Conversation: React.FC<{}> = () => {
   let user: any = localStorage.getItem("user");
@@ -75,25 +76,26 @@ const Conversation: React.FC<{}> = () => {
 
     return (
       <div className={`message ${messageClass}`}>
+        <img className="profileImg" src={avatar} />
         <p className="messageText">{text}</p>
       </div>
     );
   }
 
-  function addMessage(message: IMessage) {
-    const { text, sender, idBoth } = message;
-    const messageClass = sender === userId ? "sent" : "received";
-    console.log(`${id[0]}-${id[1]}`);
-    if (idBoth == `${id[0]}-${id[1]}`) {
-      (document.getElementById(
-        "scrollable-div"
-      ) as HTMLInputElement).innerHTML += `<div class="message ${messageClass}">
-      <p class="messageText">${text}</p>
-    </div>`;
-    } else {
-      return;
-    }
-  }
+  // function addMessage(message: IMessage) {
+  //   const { text, sender, idBoth } = message;
+  //   const messageClass = sender === userId ? "sent" : "received";
+  //   console.log(`${id[0]}-${id[1]}`);
+  //   if (idBoth == `${id[0]}-${id[1]}`) {
+  //     (document.getElementById(
+  //       "scrollable-div"
+  //     ) as HTMLInputElement).innerHTML += `<div class="message ${messageClass}">
+  //     <p class="messageText">${text}</p>
+  //   </div>`;
+  //   } else {
+  //     return;
+  //   }
+  // }
 
   return (
     <>
