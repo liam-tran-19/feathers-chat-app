@@ -25,10 +25,9 @@ const Conversation: React.FC<{}> = () => {
       console.log(response.data);
       setStateData(response.data);
     });
-    showChat();
-    app.service("chats").on("created", addMessage);
+    showChat()
+    app.service("chats").on("created", showChat);
   }, []);
-  console.log(allMsg);
 
   const showChat = async () => {
     await axios
@@ -43,12 +42,6 @@ const Conversation: React.FC<{}> = () => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    //socket io
-    await app.service("chats").create({
-      idBoth: `${id[0]}-${id[1]}`,
-      sender: userId,
-      text: formValue,
-    });
 
     let message = {
       _id: `${id[0]}-${id[1]}`,
@@ -65,6 +58,12 @@ const Conversation: React.FC<{}> = () => {
       await axios.post<IMsgData>("/api/chats/new-chat", message);
     }
 
+    //socket io
+    await app.service("chats").create({
+      idBoth: `${id[0]}-${id[1]}`,
+      sender: userId,
+      text: formValue,
+    });
     setFormValue("");
     dummy.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -102,7 +101,9 @@ const Conversation: React.FC<{}> = () => {
         <ChatHeader info={stateData} />
         <section className="chat">
           <main id="scrollable-div">
-            {allMsg && allMsg.length > 0 && allMsg[0].messages.map((msg) => chatMessage(msg))}
+            {allMsg &&
+              allMsg.length > 0 &&
+              allMsg[0].messages.map((msg) => chatMessage(msg))}
             <span ref={dummy}></span>
           </main>
 
