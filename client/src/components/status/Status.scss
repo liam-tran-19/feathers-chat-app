@@ -1,0 +1,72 @@
+@import "./color.scss";
+
+.feed {
+  flex: 0.5;
+  border-right: 1px solid $twitter-background;
+  min-width: fit-content;
+  overflow-y: scroll;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  // width: 50%;
+
+  &__header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    // z-index: 100;
+    border: 1px solid $twitter-background;
+    padding: 15px 20px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+    }
+  }
+
+  &__tweetBox {
+    padding-bottom: 10px;
+    border-bottom: 8px solid $twitter-background;
+    padding-right: 10px;
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__input {
+      padding: 20px;
+      display: flex;
+      input {
+        flex: 1;
+        margin-left: 20px;
+        font-size: 20px;
+        border: none;
+      }
+    }
+
+    &__tweetButton {
+      background-color: $twitter-color !important;
+      border: none !important;
+      color: white !important;
+      font-weight: 900 !important;
+      text-transform: inherit !important;
+      border-radius: 30px !important;
+      width: 80px;
+      height: 40px !important;
+      margin-top: 20px !important;
+      margin-left: auto !important;
+    }
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.feed::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.feed {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
