@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Conversations.scss";
 import ChatHeader from "./Header/Header";
 import { useLocation } from "react-router";
-import { IUserObj, IMessage } from "../../../types/interfaces";
+import { IUserObj, IMessage, IMsg, IMsgData } from "../../../types/interfaces";
 import axios from "axios";
 import { app } from "../../socket";
 
@@ -12,7 +12,7 @@ const Conversation: React.FC<{}> = () => {
   const [formValue, setFormValue] = useState<string>("");
   const [userData, setUserData] = useState<IUserObj>();
   const [stateData, setStateData] = useState<IUserObj>();
-  const [allMsg, setAllMsg] = useState<Array<any>>();
+  const [allMsg, setAllMsg] = useState<Array<IMsgData>>();
   let { state } = useLocation();
   const dummy = useRef<HTMLSpanElement>(null);
   const id = [userId, state].sort();
@@ -28,12 +28,11 @@ const Conversation: React.FC<{}> = () => {
     showChat();
     app.service("chats").on("created", addMessage);
   }, []);
-  console.log(userData);
-  console.log(stateData);
+  console.log(allMsg);
 
   const showChat = async () => {
-    axios
-      .post<any>("/api/chats/findChat", { idBoth: `${id[0]}-${id[1]}` })
+    await axios
+      .post<any>("/api/chats/find-chat", { _id: `${id[0]}-${id[1]}` })
       .then((response) => {
         console.log(response.data);
         setAllMsg(response.data);
@@ -44,17 +43,33 @@ const Conversation: React.FC<{}> = () => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-
+    //socket io
     await app.service("chats").create({
       idBoth: `${id[0]}-${id[1]}`,
       sender: userId,
       text: formValue,
     });
+
+    let message = {
+      _id: `${id[0]}-${id[1]}`,
+      sender: userId,
+      text: formValue,
+    };
+    // add to database
+    if (allMsg && allMsg.length > 0) {
+      await axios.post<IMsg>("/api/chats/update", {
+        _id: `${id[0]}-${id[1]}`,
+        message,
+      });
+    } else {
+      await axios.post<IMsgData>("/api/chats/new-chat", message);
+    }
+
     setFormValue("");
     dummy.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  function chatMessage(message: IMessage) {
+  function chatMessage(message: IMsg) {
     const { text, sender } = message;
 
     const messageClass = sender === userId ? "sent" : "received";
@@ -69,6 +84,7 @@ const Conversation: React.FC<{}> = () => {
   function addMessage(message: IMessage) {
     const { text, sender, idBoth } = message;
     const messageClass = sender === userId ? "sent" : "received";
+    console.log(`${id[0]}-${id[1]}`);
     if (idBoth == `${id[0]}-${id[1]}`) {
       (document.getElementById(
         "scrollable-div"
@@ -76,6 +92,7 @@ const Conversation: React.FC<{}> = () => {
       <p class="messageText">${text}</p>
     </div>`;
     } else {
+      return;
     }
   }
 
@@ -85,7 +102,7 @@ const Conversation: React.FC<{}> = () => {
         <ChatHeader info={stateData} />
         <section className="chat">
           <main id="scrollable-div">
-            {allMsg && allMsg.map((msg) => chatMessage(msg))}
+            {allMsg && allMsg.length > 0 && allMsg[0].messages.map((msg) => chatMessage(msg))}
             <span ref={dummy}></span>
           </main>
 

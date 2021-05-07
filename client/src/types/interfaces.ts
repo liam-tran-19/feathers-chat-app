@@ -152,9 +152,13 @@ export interface UpdateLoading {
 export type StatusActions = StatusSuccess | StatusFail | StatusLoading
 export type UpdateActions = UpdateLoading | UpdateFail |UpdateSuccess
 
-
 export interface IMessage  {
   idBoth: string,
   sender: number,
   text: string
+}
+
+export interface IMsgData {
+  _id: string,
+  messages: Array<IMsg>
 }

@@ -2,9 +2,14 @@ const { Schema, model } = require("mongoose");
 
 const ChatSchema = new Schema(
   {
-    idBoth: String,
-    sender: Number,
-    text: String,
+    _id: { type: String, require: true },
+    messages: [
+      {
+        sender: Number,
+        text: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

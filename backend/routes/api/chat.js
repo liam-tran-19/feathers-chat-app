@@ -14,13 +14,13 @@ module.exports = class ChatService {
     return (this.chats = chats);
   }
 
-  async findOne(data) {
-    const chats = await Chat.findOne(data).exec()
-    if (!chats) {
-      return [];
-    }
-    return this.chats = chats
-  }
+  // async findOne(data) {
+  //   const chats = await Chat.findOne(data).exec()
+  //   if (!chats) {
+  //     return [];
+  //   }
+  //   return this.chats = chats
+  // }
 
   async create(data) {
     const chat = {
@@ -29,7 +29,7 @@ module.exports = class ChatService {
       text: data.text,
     };
 
-    Chat.create(chat);
+    // Chat.create(chat);
 
     return chat;
   }
